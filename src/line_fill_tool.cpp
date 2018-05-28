@@ -39,23 +39,49 @@ void line_fill_tool::draw(int x, int y)
 	
 	while (!linestack.empty()) {
 		pixel current = linestack.front();
+		canvas.set_pixel(current.x, current.y);
 
-		while (current.x >= 0 && !canvas.get_pixel(current.x - 1, current.y)) {
-			canvas.set_pixel(current.x, current.y);
+		while (current.x - 1 >= 0 && !canvas.get_pixel(current.x - 1, current.y)) {
+			canvas.set_pixel(current.x - 1, current.y);
 			check_neighbours(current);
 			current.x--;
 		}
+
+		linestack.pop();
 	}
 }
 
+// TODO: Fix neighbour detection
 void line_fill_tool::check_neighbours(pixel p) {
 
 	pixel n;
 
+	// top-right
 	n.x = p.x + 1;
 	n.y = p.y + 1;
-	if (!canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
-		
+	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
+		linestack.push(n);
+	}
+
+	// top
+	n.x = p.x;
+	n.y = p.y + 1;
+	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
+		linestack.push(n);
+	}
+
+	// bottom-right
+	n.x = p.x - 1;
+	n.y = p.y - 1;
+	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
+		linestack.push(n);
+	}
+
+	// bottom
+	n.x = p.x;
+	n.y = p.y - 1;
+	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
+		linestack.push(n);
 	}
 
 }

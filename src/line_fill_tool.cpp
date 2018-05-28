@@ -4,7 +4,6 @@
 // Copyright (C) 2016 CGV TU Dresden - All Rights Reserved
 //
 #include "line_fill_tool.h"
-#include <deque>
 
 
 // Initialize the tool and store a reference of a canvas_buffer
@@ -14,8 +13,6 @@ line_fill_tool::line_fill_tool(canvas_buffer& canvas): tool_base(canvas)
 	shape = TS_NONE;
 	is_draggable = false;
 }
-
-
 
 // Fill the shape that contains the point (x, y)
 void line_fill_tool::draw(int x, int y)
@@ -28,8 +25,40 @@ void line_fill_tool::draw(int x, int y)
 	                 koennen Sie sich Helfermethoden in der dazugehoerigen Header-Datei
 					 deklarieren und in dieser Datei definieren.
 	*************/
+
+	// Go to start position
+	while ((x + 1) < canvas.get_width() && !canvas.get_pixel(x + 1, y)) {
+		x++;
+	}
+
+	pixel p;
+	p.x = x;
+	p.y = y;
+
+	linestack.push(p);
+	
+	while (!linestack.empty()) {
+		pixel current = linestack.front();
+
+		while (current.x >= 0 && !canvas.get_pixel(current.x - 1, current.y)) {
+			canvas.set_pixel(current.x, current.y);
+			check_neighbours(current);
+			current.x--;
+		}
+	}
 }
 
+void line_fill_tool::check_neighbours(pixel p) {
+
+	pixel n;
+
+	n.x = p.x + 1;
+	n.y = p.y + 1;
+	if (!canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
+		
+	}
+
+}
 
 
 
@@ -40,3 +69,5 @@ void line_fill_tool::set_text(stringstream& stream)
 {
 	stream<<"Tool: Line Fill (click to fill)";
 }
+
+

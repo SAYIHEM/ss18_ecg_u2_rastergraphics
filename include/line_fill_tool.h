@@ -15,16 +15,13 @@ Read the information in "tool_base.h" for more information.
 #include "tool_base.h"
 // needed for a double ended queue
 #include <deque>
-
+#include <queue>
 
 using namespace std;
 
-// A line to be filled
-struct waiting_line {
-	int x, y; 
+struct pixel {
+	int x, y;
 };
-
-
 
 class line_fill_tool: public tool_base
 {
@@ -38,4 +35,10 @@ public:
 	// Put debug output into the stream "stream" to be displayed in the
 	// main window
 	void set_text(stringstream& stream);
+
+private:
+	void fill_tool_helper(pixel p);
+	void check_neighbours(pixel p);
+
+	queue<pixel> linestack;
 };

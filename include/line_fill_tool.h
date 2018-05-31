@@ -16,6 +16,7 @@ Read the information in "tool_base.h" for more information.
 // needed for a double ended queue
 #include <deque>
 #include <queue>
+#include <list>
 
 using namespace std;
 
@@ -40,5 +41,5 @@ private:
 	void fill_tool_helper(pixel p);
 	void check_neighbours(pixel p);
 
-	queue<pixel> linestack;
+	list<pixel> linestack;
 };

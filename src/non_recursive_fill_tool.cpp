@@ -5,6 +5,9 @@
 //
 #include "non_recursive_fill_tool.h"
 #include <deque>
+#include <list>
+
+using namespace std;
 
 // Initialize the tool and store a reference of a canvas_buffer
 non_recursive_fill_tool::non_recursive_fill_tool(canvas_buffer& canvas): tool_base(canvas)
@@ -66,37 +69,38 @@ void non_recursive_fill_tool::draw(int x, int y)
 		int cur_y = stack.front().y;
 		
 		// Complete the algorithm here
-		waiting_pixel wp;
 
-		wp.x = cur_x + 1;
-		wp.y = cur_y;
-		if (!canvas.get_pixel(wp.x, wp.y) && wp.x < canvas.get_width()) {
-			canvas.set_pixel(wp.x, wp.y);
-			stack.push_back(wp);
+		list<waiting_pixel> neighbours;
+		waiting_pixel n{};
+
+		// Add neighbours to check
+		// right
+		n = { cur_x + 1, cur_y };
+		neighbours.push_back(n);
+		// top
+		n = { cur_x, cur_y + 1 };
+		neighbours.push_back(n);
+		// left
+		n = { cur_x - 1, cur_y };
+		neighbours.push_back(n);
+		// bottom
+		n = { cur_x, cur_y - 1 };
+		neighbours.push_back(n);
+
+
+		for (auto& neighbour : neighbours) {
+			if (neighbour.x < 0 || neighbour.x >= canvas.get_width() ||
+				neighbour.y < 0 || neighbour.y >= canvas.get_height()) {
+				continue;
+			}
+
+			if (!canvas.get_pixel(neighbour.x, neighbour.y)) {
+				canvas.set_pixel(neighbour.x, neighbour.y);
+				stack.push_back(neighbour);
+			}
 		}
 
-		wp.x = cur_x;
-		wp.y = cur_y + 1;
-		if (!canvas.get_pixel(wp.x, wp.y) && wp.y < canvas.get_height()) {
-			canvas.set_pixel(wp.x, wp.y);
-			stack.push_back(wp);
-		}
-
-		wp.x = cur_x - 1;
-		wp.y = cur_y;
-		if (!canvas.get_pixel(wp.x, wp.y) && wp.x >= 0) {
-			canvas.set_pixel(wp.x, wp.y);
-			stack.push_back(wp);
-		}
-
-		wp.x = cur_x;
-		wp.y = cur_y - 1;
-		if (!canvas.get_pixel(wp.x, wp.y) && wp.y >= 0) {
-			canvas.set_pixel(wp.x, wp.y);
-			stack.push_back(wp);
-		}
-
-		stack.pop_front(); 
+		stack.pop_front();
 	}
 }
 

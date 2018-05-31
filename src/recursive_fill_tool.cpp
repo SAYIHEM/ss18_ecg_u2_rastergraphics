@@ -57,17 +57,28 @@ void recursive_fill_tool::draw_helper(int x, int y) {
 
 	canvas.set_pixel(x, y);
 
-	if (!canvas.get_pixel(x + 1, y)) {
-		draw_helper(x + 1, y);
+	if (x + 1 < canvas.get_width()) {
+		if (!canvas.get_pixel(x + 1, y)) {
+			draw_helper(x + 1, y);
+		}
 	}
-	if (!canvas.get_pixel(x, y + 1)) {
-		draw_helper(x, y + 1);
+
+	if (y + 1 < canvas.get_height()) {
+		if (!canvas.get_pixel(x, y + 1)) {
+			draw_helper(x, y + 1);
+		}
 	}
-	if (!canvas.get_pixel(x - 1, y)) {
-		draw_helper(x - 1, y);
+
+	if (x - 1 >= 0) {
+		if (!canvas.get_pixel(x - 1, y)) {
+			draw_helper(x - 1, y);
+		}
 	}
-	if (!canvas.get_pixel(x, y - 1)) {
-		draw_helper(x, y - 1);
+
+	if (y - 1 >= 0) {
+		if (!canvas.get_pixel(x, y - 1)) {
+			draw_helper(x, y - 1);
+		}
 	}
 
 	lvl--;

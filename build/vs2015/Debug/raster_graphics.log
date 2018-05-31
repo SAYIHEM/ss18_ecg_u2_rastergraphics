@@ -1,5 +1,7 @@
-﻿  line_fill_tool.cpp
-  raster_graphics.vcxproj -> C:\Users\tomg\projects\ss18_ecg_u2_rastergraphics\build\vs2015\Debug\raster_graphics.exe
-  raster_graphics.vcxproj -> C:\Users\tomg\projects\ss18_ecg_u2_rastergraphics\build\vs2015\Debug\raster_graphics.pdb (Full PDB)
+﻿  recursive_fill_tool.cpp
+  non_recursive_fill_tool.cpp
+  Generating Code...
+  raster_graphics.vcxproj -> C:\Users\tomg\Documents\projects\ss18_ecg_u2_rastergraphics\build\vs2015\Debug\raster_graphics.exe
+  raster_graphics.vcxproj -> C:\Users\tomg\Documents\projects\ss18_ecg_u2_rastergraphics\build\vs2015\Debug\raster_graphics.pdb (Full PDB)
   ..\..\dependencies\freeglut\lib\freeglut.dll
   1 File(s) copied

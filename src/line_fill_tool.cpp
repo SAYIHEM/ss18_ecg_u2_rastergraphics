@@ -4,6 +4,8 @@
 // Copyright (C) 2016 CGV TU Dresden - All Rights Reserved
 //
 #include "line_fill_tool.h"
+#include <list>
+#include <iostream>
 
 
 // Initialize the tool and store a reference of a canvas_buffer
@@ -12,6 +14,10 @@ line_fill_tool::line_fill_tool(canvas_buffer& canvas): tool_base(canvas)
 	// This tool has no shape and is not draggable
 	shape = TS_NONE;
 	is_draggable = false;
+}
+
+bool pred(pixel a, pixel b) {
+	return (a.x == b.x && a.y == b.y);
 }
 
 // Fill the shape that contains the point (x, y)
@@ -31,13 +37,12 @@ void line_fill_tool::draw(int x, int y)
 		x++;
 	}
 
-	pixel p;
-	p.x = x;
-	p.y = y;
+	pixel p = { x , y };
 
-	linestack.push(p);
-	
+	linestack.push_back(p);
+
 	while (!linestack.empty()) {
+		linestack.unique(pred);
 		pixel current = linestack.front();
 		canvas.set_pixel(current.x, current.y);
 
@@ -47,43 +52,44 @@ void line_fill_tool::draw(int x, int y)
 			current.x--;
 		}
 
-		linestack.pop();
+		linestack.pop_front();
 	}
 }
 
 // TODO: Fix neighbour detection
-void line_fill_tool::check_neighbours(pixel p) {
+void line_fill_tool::check_neighbours(const pixel p) {
 
-	pixel n;
+	list<pixel> neighbours;
+	pixel n{};
 
+	// Add neighbours to check
 	// top-right
-	n.x = p.x + 1;
-	n.y = p.y + 1;
-	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
-		linestack.push(n);
-	}
-
+	n = { p.x + 1, p.y + 1 };
+	neighbours.push_back(n);
 	// top
-	n.x = p.x;
-	n.y = p.y + 1;
-	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
-		linestack.push(n);
-	}
-
+	n = { p.x, p.y + 1 };
+	neighbours.push_back(n);
 	// bottom-right
-	n.x = p.x - 1;
-	n.y = p.y - 1;
-	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
-		linestack.push(n);
-	}
-
+	n = { p.x + 1, p.y - 1 };
+	neighbours.push_back(n);
 	// bottom
-	n.x = p.x;
-	n.y = p.y - 1;
-	if ((n.x + 1) < canvas.get_width() && !canvas.get_pixel(n.x, n.y) && canvas.get_pixel(n.x + 1, n.y)) {
-		linestack.push(n);
-	}
+	n = { p.x, p.y - 1 };
+	neighbours.push_back(n);
 
+	for (auto& neighbour : neighbours) {
+		if (neighbour.x < 0 || neighbour.x >= canvas.get_width() || 
+			neighbour.y < 0 || neighbour.y >= canvas.get_height()) {
+			continue;
+		}
+
+		if (neighbour.x + 1 == canvas.get_width() && !(canvas.get_pixel(neighbour.x, neighbour.y))) {
+			linestack.push_back(neighbour);
+
+		}
+		else if ((neighbour.x + 1) < canvas.get_width() && !canvas.get_pixel(neighbour.x, neighbour.y) && canvas.get_pixel(neighbour.x + 1, neighbour.y)) {
+			linestack.push_back(neighbour);
+		}
+	}
 }
 
 

@@ -45,6 +45,7 @@ void line_fill_tool::draw(int x, int y)
 		linestack.unique(pred);
 		pixel current = linestack.front();
 		canvas.set_pixel(current.x, current.y);
+		check_neighbours(current);
 
 		while (current.x - 1 >= 0 && !canvas.get_pixel(current.x - 1, current.y)) {
 			canvas.set_pixel(current.x - 1, current.y);
@@ -62,9 +63,7 @@ void line_fill_tool::check_neighbours(const pixel p) {
 	pixel n{};
 
 	// Add neighbours to check
-	neighbours.push_back({ p.x + 1, p.y + 1 }); // top-right
 	neighbours.push_back({ p.x, p.y + 1 }); // top
-	neighbours.push_back({ p.x + 1, p.y - 1 }); // bottom-right
 	neighbours.push_back({ p.x, p.y - 1 }); // bottom
 
 	for (auto& neighbour : neighbours) {
@@ -73,12 +72,14 @@ void line_fill_tool::check_neighbours(const pixel p) {
 			continue;
 		}
 
-		if (neighbour.x + 1 == canvas.get_width() && !(canvas.get_pixel(neighbour.x, neighbour.y))) {
-			linestack.push_back(neighbour);
+		if (neighbour.y >= 0 && neighbour.y < canvas.get_height()) {
+			if (!canvas.get_pixel(neighbour.x, neighbour.y)) {
+				while ((neighbour.x + 1) < canvas.get_width() && !canvas.get_pixel(neighbour.x + 1, neighbour.y)) {
+					neighbour.x++;
+				}
+				linestack.push_back(neighbour);
+			}
 
-		}
-		else if ((neighbour.x + 1) < canvas.get_width() && !canvas.get_pixel(neighbour.x, neighbour.y) && canvas.get_pixel(neighbour.x + 1, neighbour.y)) {
-			linestack.push_back(neighbour);
 		}
 	}
 }

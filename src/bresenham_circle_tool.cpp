@@ -15,6 +15,15 @@ bresenham_circle_tool::bresenham_circle_tool(canvas_buffer& canvas): tool_base(c
 }
 
 
+struct cycle_drawer {
+	int xm, ym; // midpoints
+
+	void draw_cycle_point(int x, int y, canvas_buffer &canvas) {
+		if (x + xm < canvas.get_width() && x + xm >= 0 && y + ym < canvas.get_height() && y + ym >= 0)
+			canvas.set_pixel(x + xm, y + ym);
+	}
+};
+
 
 // Draw a circle with center (x0, y0) and (x1, y1) on the circle
 void bresenham_circle_tool::draw(int x0, int y0, int x1, int y1)
@@ -30,6 +39,33 @@ void bresenham_circle_tool::draw(int x0, int y0, int x1, int y1)
 	                 Bresenham-Algorithmus. Der Kreis soll seinen Mittelpunkt bei
 					 (x0, y0) und einen Radius von "r" haben.
 	*************/
+
+	int d = -r;
+	int dy = 0, dx = r;
+
+	cycle_drawer cd;
+	cd.xm = x0;
+	cd.ym = y0;
+
+	while (dx >= dy) {
+
+		cd.draw_cycle_point(dx, dy, canvas);
+		cd.draw_cycle_point(-dx, dy, canvas);
+		cd.draw_cycle_point(dx, -dy, canvas);
+		cd.draw_cycle_point(-dx, -dy, canvas);
+		cd.draw_cycle_point(dy, dx, canvas);
+		cd.draw_cycle_point(-dy, dx, canvas);
+		cd.draw_cycle_point(dy, -dx, canvas);
+		cd.draw_cycle_point(-dy, -dx, canvas);
+
+		d += 2 * dy + 1;
+		dy++;
+
+		if (d > 0) {
+			d += -2 * dx + 2;
+			dx--;
+		}
+	}
 
 }
 

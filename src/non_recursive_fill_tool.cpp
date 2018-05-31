@@ -74,19 +74,10 @@ void non_recursive_fill_tool::draw(int x, int y)
 		waiting_pixel n{};
 
 		// Add neighbours to check
-		// right
-		n = { cur_x + 1, cur_y };
-		neighbours.push_back(n);
-		// top
-		n = { cur_x, cur_y + 1 };
-		neighbours.push_back(n);
-		// left
-		n = { cur_x - 1, cur_y };
-		neighbours.push_back(n);
-		// bottom
-		n = { cur_x, cur_y - 1 };
-		neighbours.push_back(n);
-
+		neighbours.push_back({ cur_x + 1, cur_y }); // right
+		neighbours.push_back({ cur_x, cur_y + 1 }); // top
+		neighbours.push_back({ cur_x - 1, cur_y }); // left
+		neighbours.push_back({ cur_x, cur_y - 1 }); // bottom
 
 		for (auto& neighbour : neighbours) {
 			if (neighbour.x < 0 || neighbour.x >= canvas.get_width() ||

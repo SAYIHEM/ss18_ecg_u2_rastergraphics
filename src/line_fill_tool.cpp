@@ -56,25 +56,16 @@ void line_fill_tool::draw(int x, int y)
 	}
 }
 
-// TODO: Fix neighbour detection
 void line_fill_tool::check_neighbours(const pixel p) {
 
 	list<pixel> neighbours;
 	pixel n{};
 
 	// Add neighbours to check
-	// top-right
-	n = { p.x + 1, p.y + 1 };
-	neighbours.push_back(n);
-	// top
-	n = { p.x, p.y + 1 };
-	neighbours.push_back(n);
-	// bottom-right
-	n = { p.x + 1, p.y - 1 };
-	neighbours.push_back(n);
-	// bottom
-	n = { p.x, p.y - 1 };
-	neighbours.push_back(n);
+	neighbours.push_back({ p.x + 1, p.y + 1 }); // top-right
+	neighbours.push_back({ p.x, p.y + 1 }); // top
+	neighbours.push_back({ p.x + 1, p.y - 1 }); // bottom-right
+	neighbours.push_back({ p.x, p.y - 1 }); // bottom
 
 	for (auto& neighbour : neighbours) {
 		if (neighbour.x < 0 || neighbour.x >= canvas.get_width() || 
